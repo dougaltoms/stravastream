@@ -46,14 +46,14 @@ with st.form("my_form"):
         url_list = activity.split('https://www.strava.com/activities/')
         activity_id = url_list[1]
 
-st.write("Hello, ", get_name(activity_id))
+        st.write("Hello, ", get_name(activity_id))
 
-r = get_request(f'activities/{activity_id}')
+        r = get_request(f'activities/{activity_id}')
 
-df = pd.DataFrame.from_dict(r, orient="index")
-df=df.transpose()
-df=df.loc[:,"name":"sport_type"]
-df['distance'] = df['distance']/1000
-df['moving_time'] = df['moving_time']/60
-df['elapsed_time'] = df['elapsed_time']/60
-st.dataframe(df)
+        df = pd.DataFrame.from_dict(r, orient="index")
+        df=df.transpose()
+        df=df.loc[:,"name":"sport_type"]
+        df['distance'] = df['distance']/1000
+        df['moving_time'] = df['moving_time']/60
+        df['elapsed_time'] = df['elapsed_time']/60
+        st.dataframe(df)
