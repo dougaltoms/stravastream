@@ -61,6 +61,6 @@ with st.form("my_form"):
         distance = str(round((r['distance']/1000),2))
         speed = str(round((r['distance']/1000)/((r['elapsed_time']/60)/60)))
         st.header(title)
-        st.subheader('Distance: ', distance)
-        st.subheader('Average speed (km/h): ', speed)
+        st.text('Distance: '+ distance)
+        st.text('Average speed (km/h): '+ speed)
         st.dataframe(df)
