@@ -10,19 +10,29 @@ st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strav
         , width=250)
 st.header('Analyse your Strava activity')
 
-def get_name(activity_id):
-    
+def get_request(endpoint):
+
+    import requests
+
     access_token = 'e1e23d6fb6012aaac1dc72271aac70d380374bec'
-    url = f"https://www.strava.com/api/v3/activities/{activity_id}"
+
+    url = f"https://www.strava.com/api/v3/{endpoint}"
     r = requests.get(url + '?access_token=' + access_token)
+
     r = r.json()
 
+    return r
+
+def get_name(activity_id):
+
+    r = get_request(f'activities/{activity_id}')
     athlete = r['athlete']
-    r = requests.get("https://www.strava.com/api/v3/athlete" + '?access_token=' + access_token)
-    r = r.json()
+
+    r = get_request('athlete')
     firstname = r['firstname']
     lastname = r['lastname']
     name = firstname + " " + lastname
+    
     return name
 
 
