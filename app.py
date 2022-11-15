@@ -46,7 +46,7 @@ with st.form("my_form"):
         df = pd.DataFrame.from_dict(r, orient="index")
         df=df.transpose()
         df=df.loc[:,"name":"sport_type"]
-        df['distance'] = df['distance']/1000
-        df['moving_time'] = df['moving_time']/60
-        df['elapsed_time'] = df['elapsed_time']/60
+        #df['distance'] = df['distance']/1000
+        #df['moving_time'] = df['moving_time']/60
+        #df['elapsed_time'] = df['elapsed_time']/60
         st.dataframe(df)
