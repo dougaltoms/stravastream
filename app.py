@@ -38,7 +38,7 @@ with st.form("my_form"):
 
         #def get_request()
 
-        access_token = '65208a2306120b7ddc30a0486f43dcfb2177d3ff'
+        access_token = '925b3deb86a71a02874697ad1233da9a30d63679'
         url = f"https://www.strava.com/api/v3/activities/{activity_id}"
         r = requests.get(url + '?access_token=' + access_token)
         r = r.json()
