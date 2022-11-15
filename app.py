@@ -46,31 +46,14 @@ with st.form("my_form"):
         url_list = activity.split('https://www.strava.com/activities/')
         activity_id = url_list[1]
 
-        st.write("Hello, ", get_name(activity_id))
+st.write("Hello, ", get_name(activity_id))
 
-        # response = requests.post(
-        #                 url = 'https://www.strava.com/oauth/token',
-        #                 data = {
-        #                         'client_id': st.secrets['client_id'],
-        #                         'client_secret': st.secrets['client_secret'],
-        #                         'code': st.secrets['code'], 
-        #                         'grant_type': 'authorization_code'
-        #                         }
-        #             )
-                    
-        # st.text(response)
+r = get_request(f'activities/{activity_id}')
 
-        # strava_tokens = response.json()
-        # access_token = strava_tokens['access_token']
-
-        #def get_request()
-
-        r = get_request(f'activities/{activity_id}')
-
-        df = pd.DataFrame.from_dict(r, orient="index")
-        df=df.transpose()
-        df=df.loc[:,"name":"sport_type"]
-        #df['distance'] = df['distance']/1000
-        #df['moving_time'] = df['moving_time']/60
-        #df['elapsed_time'] = df['elapsed_time']/60
-        st.dataframe(df)
+df = pd.DataFrame.from_dict(r, orient="index")
+df=df.transpose()
+df=df.loc[:,"name":"sport_type"]
+df['distance'] = df['distance']/1000
+df['moving_time'] = df['moving_time']/60
+df['elapsed_time'] = df['elapsed_time']/60
+st.dataframe(df)
