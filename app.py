@@ -12,6 +12,7 @@ st.header('Analyse your Strava activity')
 
 def get_name(activity_id):
     
+    access_token = 'e1e23d6fb6012aaac1dc72271aac70d380374bec'
     url = f"https://www.strava.com/api/v3/activities/{activity_id}"
     r = requests.get(url + '?access_token=' + access_token)
     r = r.json()
