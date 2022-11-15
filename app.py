@@ -57,10 +57,13 @@ with st.form("my_form"):
         df['moving_time'] = df['moving_time']/60
         df['elapsed_time'] = df['elapsed_time']/60
 
+        polyline = r['map'][1]
+
         title = r["name"]
         distance = str(round((r['distance']/1000),2))
         speed = str(round((r['distance']/1000)/((r['elapsed_time']/60)/60)))
         st.header(title)
         st.text('Distance: '+ distance)
         st.text('Average speed (km/h): '+ speed)
+        st.text(polyline)
         st.dataframe(df)
