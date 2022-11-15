@@ -57,10 +57,10 @@ with st.form("my_form"):
         df['moving_time'] = df['moving_time']/60
         df['elapsed_time'] = df['elapsed_time']/60
 
-        title = df["name"]
+        title = r["name"]
         distance = round((r['distance']/1000),2)
         speed = round((r['distance']/1000)/((r['elapsed_time']/60)/60))
         st.header(title)
-        st.subheader('Distance: ',str(distance))
-        st.subheader('Average speed (km/h): ', str(speed))
+        st.subheader('Distance: ',str(distance).encode())
+        st.subheader('Average speed (km/h): ', str(speed).encode())
         st.dataframe(df)
