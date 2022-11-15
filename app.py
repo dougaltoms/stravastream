@@ -32,7 +32,7 @@ def get_name(activity_id):
     firstname = r['firstname']
     lastname = r['lastname']
     name = firstname + " " + lastname
-    
+
     return name
 
 
@@ -65,10 +65,7 @@ with st.form("my_form"):
 
         #def get_request()
 
-        access_token = '925b3deb86a71a02874697ad1233da9a30d63679'
-        url = f"https://www.strava.com/api/v3/activities/{activity_id}"
-        r = requests.get(url + '?access_token=' + access_token)
-        r = r.json()
+        r = get_request(f'activities/{activity_id}')
 
         df = pd.DataFrame.from_dict(r, orient="index")
         df=df.transpose()
