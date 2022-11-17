@@ -10,11 +10,29 @@ st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strav
         , width=250)
 st.header('Analyse your Strava activity')
 
+###################
+## Authorisation ##
+###################
+
+auth_url = "https://www.strava.com/oauth/token"
+payload = {
+    "client_id":st.secrets["client_id"],
+    "client_secret":st.secrets["client_secret"],
+    "refresh_token":st.secrets["refresh_token"],
+    "grant_type":"refresh_token",
+    "f":"json"
+}
+
+r = requests.get(auth_url, data=payload, verify=False)
+access_token = r.json()['access_token']
+
+#################
+## get_request ##
+#################
+
 def get_request(endpoint):
 
     import requests
-
-    access_token = 'e1e23d6fb6012aaac1dc72271aac70d380374bec'
 
     url = f"https://www.strava.com/api/v3/{endpoint}"
     r = requests.get(url + '?access_token=' + access_token)
