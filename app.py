@@ -23,7 +23,7 @@ payload = {
     "f":"json"
 }
 
-r = requests.get(auth_url, data=payload, verify=False)
+r = requests.post(auth_url, data=payload, verify=False)
 access_token = r.json()['access_token']
 
 #################
