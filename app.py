@@ -46,7 +46,7 @@ def get_name(activity_id):
     r = get_request(f'activities/{activity_id}')
     athlete = r['athlete']
 
-    r = get_request('athlete')
+    r = get_request(athlete)
     firstname = r['firstname']
     lastname = r['lastname']
     name = firstname + " " + lastname
