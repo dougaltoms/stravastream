@@ -43,7 +43,8 @@ st.markdown(link, unsafe_allow_html=True)
 #     return r
 
 with st.form("my_form"):
-   url = st.text_input("Paste url here:")
+   url = st.text_input("Paste authorisation url here:")
+   activity= st.text_input("Paste activity url here:")
    # Every form must have a submit button.
    submitted = st.form_submit_button("Get data")
 
@@ -76,7 +77,6 @@ with st.form("my_form"):
         ## Display Activity ##
         #####################
 
-        activity=  st.text_input("Paste activity url here:")
         activity_id = activity.split("https://www.strava.com/activities/")[1]
         r = requests.get(f"{api_url}activities/{activity_id}")
         df = pd.DataFrame.from_dict(r, orient="index")
