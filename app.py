@@ -49,7 +49,7 @@ with st.form("my_form"):
 
    if submitted:
 
-        code = url.split('http://localhost/?state=&code=')
+        code = url.split('https://stravastream.streamlit.app/?state=&code=')
         code = code[0:40]
 
         tokens = requests.post(url='https://www.strava.com/oauth/token',
