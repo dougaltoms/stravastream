@@ -52,6 +52,7 @@ with st.form("my_form"):
    if submitted:
 
         code = url.split('https://stravastream.streamlit.app/?state=&code=')
+        code = code[1]
         code = code[0:40]
 
         st.text(code)
