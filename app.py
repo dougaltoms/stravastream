@@ -54,6 +54,8 @@ with st.form("my_form"):
         code = url.split('https://stravastream.streamlit.app/?state=&code=')
         code = code[0:40]
 
+        st.text(code)
+
         tokens = requests.post(url='https://www.strava.com/oauth/token',
                        data={'client_id': client_id,
                              'client_secret': client_secret,
