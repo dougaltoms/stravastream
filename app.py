@@ -16,7 +16,7 @@ st.header('Analyse your Strava activity')
 
 client_id = st.secrets["client_id"]
 client_secret = st.secrets["client_secret"]
-redirect_uri = r'http://localhost/'
+redirect_uri = r'https://stravastream.streamlit.app/'
 
 request_url = f'http://www.strava.com/oauth/authorize?client_id={client_id}' \
                   f'&response_type=code&redirect_uri={redirect_uri}' \
