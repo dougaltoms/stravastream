@@ -43,6 +43,8 @@ st.markdown(link, unsafe_allow_html=True)
 
 with st.form("my_form"):
    url = st.text_input("Paste url here:")
+   link = f'[Click here to authorise]({request_url})'
+   st.markdown(link, unsafe_allow_html=True)
 
    # Every form must have a submit button.
    submitted = st.form_submit_button("Get data")
@@ -59,6 +61,7 @@ with st.form("my_form"):
                              'grant_type': 'authorization_code'})
 
         strava_tokens = tokens.json()
+        st.json(strava_tokens)
 
         ###################
         ## Get User Info ##
