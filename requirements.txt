@@ -1,1 +1,2 @@
 polyline==1.4.0
+stravalib==0.10.4
