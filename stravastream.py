@@ -52,11 +52,13 @@ with st.form("We need your access token"):
         st.dataframe(df_display)
 
         selected = st.multiselect("Pick your activity: ", df['name'])
+        get_map = st.form_submit_button('Get Map')
 
         #########
         ## Map ##
         #########
-        if selected:
+        if get_map:
+
             df_map = df[df['name'] == selected]
             s = df_map['map'].values
             map_polyline=s[0]['summary_polyline']
