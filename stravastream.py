@@ -26,6 +26,8 @@ with st.form("We need your access token"):
 
 if authorise:
 
+    st.header("Activity Summary")
+
     url = 'https://www.strava.com/oauth/token'
     r = requests.post(url,  data={'client_id': client_id,
                             'client_secret': client_secret,
@@ -53,12 +55,15 @@ if authorise:
 
     activity = st.text_input('Pick your activity from above')
 
-    if activity:
-        df_map = df[df['name'] == activity]
-        st.dataframe(df_map)
-        s = df_map['map'].values
-        map_polyline=s[0]['summary_polyline']
-        st.text(map_polyline)
+with st.form("Get activity stats"):
+
+    activity_id = st.text_input('Copy & Paste activity ID  here')
+    authorise = st.form_submit_button('Get Data')
+    if authorise:
+
+        r = requests.get(f"http://www.strava.com/api/v3/athlete/activities/{activity_id}?access_token={access_token}")
+
+        map_polyline = r.json()['map']['polyline']
         map_coords = polyline.decode(map_polyline)
         map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
 
