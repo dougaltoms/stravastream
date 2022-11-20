@@ -24,42 +24,61 @@ request_url = f'http://www.strava.com/oauth/authorize?client_id={client_id}' \
                   f'&approval_prompt=force' \
                   f'&scope=profile:read_all,activity:read_all'
 
-link = f'[Click here to authorise]({request_url})'
-st.markdown(link, unsafe_allow_html=True)
+# with st.form("authorise_form"):
 
-#################
-## get_request ##
-#################
+#     link = f'[Click here to authorise]({request_url})'
+#     authorise = st.form_submit_button(link)
 
-# def get_request(endpoint):
+#     authorisation_code = '7e5eb812c34ab7351ff68c75b3a0833cfbb3599c'
 
-#     import requests
+#     if authorise:
+#         response = requests.post(
+#         url="https://www.strava.com/oauth/token",
+#         json={
+#             "client_id": client_id,
+#             "client_secret": client_secret,
+#             "code": authorisation_code,
+#             "grant_type": "authorization_code",
+#         }
+#     )
+#         # r = requests.post('request_url
+#         #     )
 
-#     url = f"https://www.strava.com/api/v3/{endpoint}"
-#     r = requests.get(url + '?access_token=' + access_token)
+    
 
-#     r = r.json()
 
-#     return r
+# st.markdown(link, unsafe_allow_html=True)
+
+
+code = '7e5eb812c34ab7351ff68c75b3a0833cfbb3599c'
+
+tokens = requests.post(url='https://www.strava.com/oauth/token',
+               data={'client_id': client_id,
+                     'client_secret': client_secret,
+                     'code': code,
+                     'grant_type': 'authorization_code'})
+
+strava_tokens = tokens.json()
 
 with st.form("my_form"):
-   url = st.text_input("Paste authorisation url here:")
+   #url = st.text_input("Paste authorisation url here:")
    activity= st.text_input("Paste activity url here:")
    # Every form must have a submit button.
    submitted = st.form_submit_button("Get data")
 
    if submitted:
 
-        code = url.split('https://stravastream.streamlit.app/?state=&code=')[1]
-        code = code[0:40]
+        # code = url.split('https://stravastream.streamlit.app/?state=&code=')[1]
+        # code = code[0:40]
 
-        tokens = requests.post(url='https://www.strava.com/oauth/token',
-                       data={'client_id': client_id,
-                             'client_secret': client_secret,
-                             'code': code,
-                             'grant_type': 'authorization_code'})
+        # tokens = requests.post(url='https://www.strava.com/oauth/token',
+        #                data={'client_id': client_id,
+        #                      'client_secret': client_secret,
+        #                      'code': code,
+        #                      'grant_type': 'authorization_code'})
 
-        strava_tokens = tokens.json()
+        # strava_tokens = tokens.json()
+        requests.get
 
         ###################
         ## Get User Info ##
