@@ -51,16 +51,14 @@ with st.form("We need your access token"):
         
         st.dataframe(df_display)
 
-        selected = st.multiselect("Pick your activity from above", df['name']) #df['name'][0]
+        activity = st.text_input('Pick your activity from above')
 
-        if selected:
+        df_map = df[df['name'] == activity]
+        st.dataframe(df_map)
+        s = df_map['map'].values
+        map_polyline=s[0]['summary_polyline']
+        st.text(map_polyline)
+        map_coords = polyline.decode(map_polyline)
+        map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
 
-            df_map = df[df['name'] == selected]
-            st.dataframe(df_map)
-            s = df_map['map'].values
-            map_polyline=s[0]['summary_polyline']
-            st.text(map_polyline)
-            map_coords = polyline.decode(map_polyline)
-            map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
-
-            st.map(map_df)
+        st.map(map_df)
