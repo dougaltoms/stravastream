@@ -1,16 +1,37 @@
-import StravaLibQt_Authentification as sa
 import streamlit as st
 import requests
-import pandas
+import pandas as pd
+import polyline
 
-client_id = st.secrets["client_id"]
-client_secret = st.secrets["client_secret"]
+client_id = st.secrets('client_id')
+client_secret = st.secrets('client_secret')
+redirect_url = st.secrets('redirect_url')
 
+request_url = f'http://www.strava.com/oauth/authorize?client_id={client_id}' \
+                  f'&response_type=code&redirect_uri={redirect_url}' \
+                  f'&approval_prompt=force' \
+                  f'&scope=profile:read_all,activity:read_all'
 
-st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strava-logo-png-4.png?fit=1200%2C1198&ssl=1'
-        , width=250)
+link = f'[Click here to authorise]({request_url})'
+st.markdown(link)
 
-client = sa.refresh_access_token(client_id, client_secret)
-curr_athlete = client.get_athlete()
+with st.form("We need your access token"):
 
-st.header("Hello, {} {}".format(curr_athlete.firstname, curr_athlete.lastname))
+    code = st.text_input('Copy & Paste auth token here')
+    authorise = st.form_submit_button('Submit')
+
+    if authorise:
+
+        url = 'https://www.strava.com/oauth/token'
+        r = requests.post(url,  data={'client_id': client_id,
+                             'client_secret': client_secret,
+                             'code': code,
+                             'grant_type': 'authorization_code'})
+
+        token = r.json()['access_token']
+
+        st.text('Successfully Authorised')
+
+#####################
+## Generate Client ##
+#####################
