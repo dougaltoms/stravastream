@@ -51,20 +51,23 @@ with st.form("We need your access token"):
         
         st.dataframe(df_display)
 
-        selected = st.text_input("Pick your activity from above: ", df['name'][0])
-        get_map = st.form_submit_button('Get Map')
 
-        #########
-        ## Map ##
-        #########
-        if get_map:
+with st.form("Map time"):
 
-            df_map = df[df['name'] == selected]
-            st.dataframe(df_map)
-            s = df_map['map'].values
-            map_polyline=s[0]['summary_polyline']
-            st.text(map_polyline)
-            map_coords = polyline.decode(map_polyline)
-            map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+    selected = st.text_input("Pick your activity from above: ", df['name'][0])
+    get_map = st.form_submit_button('Get Map')
 
-            st.map(map_df)
+    #########
+    ## Map ##
+    #########
+    if get_map:
+
+        df_map = df[df['name'] == selected]
+        st.dataframe(df_map)
+        s = df_map['map'].values
+        map_polyline=s[0]['summary_polyline']
+        st.text(map_polyline)
+        map_coords = polyline.decode(map_polyline)
+        map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+
+        st.map(map_df)
