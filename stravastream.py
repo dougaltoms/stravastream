@@ -44,6 +44,10 @@ with st.form("We need your access token"):
 
         df = pd.DataFrame(r.json())
         df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
+
+        df_display['distance'] = round(df_display['distance']/1000,2)
+        df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
+        df_display['moving_time'] = df_display['moving_time']/60
         
         st.dataframe(df_display)
 
@@ -52,11 +56,11 @@ with st.form("We need your access token"):
         #########
         ## Map ##
         #########
+        if selected:
+            df_map = df[df['name'] == selected]
+            s = df_map['map'].values
+            map_polyline=s[0]['summary_polyline']
+            map_coords = polyline.decode(map_polyline)
+            map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
 
-        df_map = df[df['name'] == selected]
-        s = df_map['map'].values
-        map_polyline=s[0]['summary_polyline']
-        map_coords = polyline.decode(map_polyline)
-        map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
-
-        st.map(map_df)
+            st.map(map_df)
