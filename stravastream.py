@@ -60,8 +60,10 @@ with st.form("We need your access token"):
         if get_map:
 
             df_map = df[df['name'] == selected]
+            st.dataframe(df_map)
             s = df_map['map'].values
             map_polyline=s[0]['summary_polyline']
+            st.text(map_polyline)
             map_coords = polyline.decode(map_polyline)
             map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
 
