@@ -38,7 +38,7 @@ with st.form("We need your access token"):
         lastname = r.json()['athlete']['lastname']
         fullname = firstname + " " + lastname
 
-        st.text("Hello, ",fullname)
+        st.text(f"Hello, {fullname}")
 
         r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
