@@ -51,7 +51,7 @@ with st.form("We need your access token"):
         
         st.dataframe(df_display)
 
-        selected = st.multiselect("Pick your activity: ", df['name'])
+        selected = st.text_input("Pick your activity from above: ", df['name'][0])
         get_map = st.form_submit_button('Get Map')
 
         #########
