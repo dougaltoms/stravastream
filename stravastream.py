@@ -51,7 +51,7 @@ with st.form("We need your access token"):
         
         st.dataframe(df_display)
 
-        selected = st.text_input("Pick your activity from above: ", df['name'][0])
+        selected = st.multiselect("Pick your activity from above", df['name']) #df['name'][0]
 
         if selected:
 
