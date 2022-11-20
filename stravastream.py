@@ -12,13 +12,17 @@ request_url = f'http://www.strava.com/oauth/authorize?client_id={client_id}' \
                   f'&approval_prompt=force' \
                   f'&scope=profile:read_all,activity:read_all'
 
+st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strava-logo-png-4.png?fit=1200%2C1198&ssl=1'
+        , width=250)
+st.header('Custom Strava Dashboard')                  
+
 link = f'[Click here to authorise]({request_url})'
 st.markdown(link)
 
 with st.form("We need your access token"):
 
     code = st.text_input('Copy & Paste auth token here')
-    authorise = st.form_submit_button('Submit')
+    authorise = st.form_submit_button('Get Data')
 
     if authorise:
 
@@ -28,10 +32,31 @@ with st.form("We need your access token"):
                              'code': code,
                              'grant_type': 'authorization_code'})
 
-        token = r.json()['access_token']
+        access_token = r.json()['access_token']
 
-        st.text('Successfully Authorised')
+        firstname = r.json()['athlete']['firstname']
+        lastname = r.json()['athlete']['lastname']
+        fullname = firstname + " " + lastname
 
-#####################
-## Generate Client ##
-#####################
+        st.text("Hello, ",fullname)
+
+        r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
+
+        df = pd.DataFrame(r.json())
+        df = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type', '']]
+        
+        st.dataframe(df)
+
+        selected = st.multiselect("Pick your activity: ", df['name'])
+
+        #########
+        ## Map ##
+        #########
+
+        df_map = df[df['name'] == selected]
+        s = df_map['map'].values
+        map_polyline=s[0]['summary_polyline']
+        map_coords = polyline.decode(map_polyline)
+        map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+
+        st.map(map_df)
