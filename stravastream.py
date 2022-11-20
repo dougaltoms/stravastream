@@ -43,9 +43,9 @@ with st.form("We need your access token"):
         r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
         df = pd.DataFrame(r.json())
-        df = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type', '']]
+        df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
         
-        st.dataframe(df)
+        st.dataframe(df_display)
 
         selected = st.multiselect("Pick your activity: ", df['name'])
 
