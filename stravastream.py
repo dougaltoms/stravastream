@@ -53,7 +53,6 @@ if authorise:
     
     st.dataframe(df_display)
 
-    activity = st.text_input('Pick your activity from above')
 
 with st.form("Get activity stats"):
 
@@ -61,7 +60,7 @@ with st.form("Get activity stats"):
     authorise = st.form_submit_button('Get Data')
     if authorise:
 
-        r = requests.get(f"http://www.strava.com/api/v3/athlete/activities/{activity_id}?access_token={access_token}")
+        r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={access_token}")
 
         map_polyline = r.json()['map']['polyline']
         map_coords = polyline.decode(map_polyline)
