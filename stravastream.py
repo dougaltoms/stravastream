@@ -24,42 +24,42 @@ with st.form("We need your access token"):
     code = st.text_input('Copy & Paste auth token here')
     authorise = st.form_submit_button('Get Data')
 
-    if authorise:
+if authorise:
 
-        url = 'https://www.strava.com/oauth/token'
-        r = requests.post(url,  data={'client_id': client_id,
-                             'client_secret': client_secret,
-                             'code': code,
-                             'grant_type': 'authorization_code'})
+    url = 'https://www.strava.com/oauth/token'
+    r = requests.post(url,  data={'client_id': client_id,
+                            'client_secret': client_secret,
+                            'code': code,
+                            'grant_type': 'authorization_code'})
 
-        access_token = r.json()['access_token']
+    access_token = r.json()['access_token']
 
-        firstname = r.json()['athlete']['firstname']
-        lastname = r.json()['athlete']['lastname']
-        fullname = firstname + " " + lastname
+    firstname = r.json()['athlete']['firstname']
+    lastname = r.json()['athlete']['lastname']
+    fullname = firstname + " " + lastname
 
-        st.text(f"Hello, {fullname}")
+    st.text(f"Hello, {fullname}")
 
-        r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
+    r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
-        df = pd.DataFrame(r.json())
-        df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
+    df = pd.DataFrame(r.json())
+    df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
 
-        df_display['distance'] = round(df_display['distance']/1000,2)
-        df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
-        df_display['moving_time'] = df_display['moving_time']/60
-        
-        st.dataframe(df_display)
+    df_display['distance'] = round(df_display['distance']/1000,2)
+    df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
+    df_display['moving_time'] = df_display['moving_time']/60
+    
+    st.dataframe(df_display)
 
-        activity = st.text_input('Pick your activity from above')
+    activity = st.text_input('Pick your activity from above')
 
-        if activity:
-            df_map = df[df['name'] == activity]
-            st.dataframe(df_map)
-            s = df_map['map'].values
-            map_polyline=s[0]['summary_polyline']
-            st.text(map_polyline)
-            map_coords = polyline.decode(map_polyline)
-            map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+    if activity:
+        df_map = df[df['name'] == activity]
+        st.dataframe(df_map)
+        s = df_map['map'].values
+        map_polyline=s[0]['summary_polyline']
+        st.text(map_polyline)
+        map_coords = polyline.decode(map_polyline)
+        map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
 
-            st.map(map_df)
+        st.map(map_df)
