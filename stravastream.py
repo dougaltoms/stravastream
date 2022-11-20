@@ -62,4 +62,4 @@ if authorise:
         map_coords = polyline.decode(map_polyline)
         map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
 
-        st.map(map_df)
+        st.dataframe(map_df)
