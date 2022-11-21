@@ -53,24 +53,21 @@ if st.button("Get Data"):
 
     r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
-    st.json(r.json())
-
     df = pd.DataFrame(r.json())
+    df = df.set_index("name")
     df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
     df_display = df_display.set_index("name")
 
     df_display['distance'] = round(df_display['distance']/1000,2)
     df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
     df_display['moving_time'] = df_display['moving_time']/60
-    
 
     selected = st.multiselect("Choose activity: ", list(df_display.index) ,df_display['name'][0])
     to_display = df_display.loc[selected]
 
     st.dataframe(to_display)
 
-    map_polyline = r.json()['map']['polyline']
-
+    map_polyline = df.loc[selected]['map']['polyline']
     
     map_coords = polyline.decode(map_polyline)
     map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
