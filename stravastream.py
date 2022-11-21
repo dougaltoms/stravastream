@@ -54,7 +54,6 @@ if st.button("Get Data"):
     r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
     df = pd.DataFrame(r.json())
-    df = df.set_index("name")
     df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
     df_display = df_display.set_index("name")
 
@@ -67,7 +66,8 @@ if st.button("Get Data"):
 
     st.dataframe(to_display)
 
-    map_polyline = df.loc[selected]['map']['polyline']
+    df = df.loc[df['name'] == selected]
+    map_polyline = df['map']['polyline']
     
     map_coords = polyline.decode(map_polyline)
     map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
