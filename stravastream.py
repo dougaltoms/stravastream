@@ -23,6 +23,9 @@ if st.button("Get Data"):
 
     code = st.experimental_get_query_params()["code"][0]
 
+    if 'code' not in st.session_state:
+        st.session_state['code'] = code
+
     url = 'https://www.strava.com/oauth/token'
     r = requests.post(url,  data={'client_id': client_id,
                             'client_secret': client_secret,
@@ -30,29 +33,39 @@ if st.button("Get Data"):
                             'grant_type': 'authorization_code'})
 
     access_token = r.json()['access_token']
+    refresh_token = r.json()['refresh_token']
+    expires_at = r.json()['expires_at']
+
+    if 'access_token' not in st.session_state:
+        st.session_state['access_token'] = access_token
+
+    if 'refresh_token' not in st.session_state:
+        st.session_state['refresh_token'] = refresh_token
+
+    if 'expires_at' not in st.session_state:
+        st.session_state['expires_at'] = expires_at
 
     firstname = r.json()['athlete']['firstname']
     lastname = r.json()['athlete']['lastname']
     fullname = firstname + " " + lastname
 
     st.header(f"Hello, {fullname}")
-    st.write("Choose an activity:")
 
     r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
     df = pd.DataFrame(r.json())
     df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
+    df_display = df_display.set_index("name")
 
     df_display['distance'] = round(df_display['distance']/1000,2)
     df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
     df_display['moving_time'] = df_display['moving_time']/60
-    df_display.set_index("name")
+    
 
-    selected = st.multiselect("Pick your fruits: ", list(df_display.index))
+    selected = st.multiselect("Choose activity: ", list(df_display.index))
     to_display = df_display.loc[selected]
 
-
-    st.dataframe(df_display)
+    st.dataframe(to_display)
 
     map_polyline = r.json()['map']['polyline']
 
