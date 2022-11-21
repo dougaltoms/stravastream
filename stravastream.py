@@ -20,9 +20,8 @@ link = f'[Click here to authorise]({request_url})'
 
 if st.button(st.markdown(link)):
 
-    return_url = st.experimental_get_query_params()
-    st.write(return_url)
-    code = return_url[1]
+    code = st.experimental_get_query_params()["code"][0]
+    st.write(code)
 
     st.header("Activity Summary")
 
@@ -52,17 +51,17 @@ if st.button(st.markdown(link)):
     st.dataframe(df_display)
 
 
-with st.form("Get activity stats"):
+# with st.form("Get activity stats"):
 
-    activity_id = st.text_input('Copy & Paste activity ID  here')
-    authorise = st.form_submit_button('Get Data')
+#     activity_id = st.text_input('Copy & Paste activity ID  here')
+#     authorise = st.form_submit_button('Get Data')
 
-    if authorise:
+#     if authorise:
 
-        r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={access_token}")
+#         r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={access_token}")
 
-        map_polyline = r.json()['map']['polyline']
-        map_coords = polyline.decode(map_polyline)
-        map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+#         map_polyline = r.json()['map']['polyline']
+#         map_coords = polyline.decode(map_polyline)
+#         map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
 
-        st.dataframe(map_df)
+#         st.dataframe(map_df)
