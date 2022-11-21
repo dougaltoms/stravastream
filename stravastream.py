@@ -65,7 +65,7 @@ if st.button("Get Data"):
     selected = st.multiselect("Choose activity: ", list(df_display.index))
 
     if 'selected' not in st.session_state:
-        st.session_sate['selected'] = selected
+        st.session_state.selected = selected
 
     # df_display['distance'] = round(df_display['distance']/1000,2)
     # df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
