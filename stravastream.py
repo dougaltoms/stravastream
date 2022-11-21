@@ -66,7 +66,7 @@ if st.button("Get Data"):
     df_display['distance'] = round(df_display['distance']/1000,2)
     df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
     df['moving_time'] = df['moving_time'].astype('float64') 
-    df['moving_time'] = pd.to_datetime(df["moving_time"], unit='s')
+    df['moving_time'] = pd.to_datetime(df["moving_time"], unit='m')
     df_display['Average Speed (kmh)'] = df_display['distance']/df_display['moving_time']
 
     st.dataframe(df_display)
