@@ -17,14 +17,12 @@ st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strav
 st.header('Custom Strava Dashboard')                  
 
 link = f'[Click here to authorise]({request_url})'
-st.markdown(link)
 
-return_url = st.experimental_get_query_params()
-code = return_url[1]
+if st.button(st.markdown(link)):
 
-authorise = st.form_submit_button('Get Data')
-
-if authorise:
+    return_url = st.experimental_get_query_params()
+    st.write(return_url)
+    code = return_url[1]
 
     st.header("Activity Summary")
 
