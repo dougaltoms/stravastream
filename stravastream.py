@@ -61,11 +61,14 @@ if st.button("Get Data"):
     df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type','id']]
     df_display = df_display.set_index("name")
 
-    st.dataframe(df_display)
+    
 
-    # df_display['distance'] = round(df_display['distance']/1000,2)
-    # df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
-    # df_display['moving_time'] = df_display['moving_time']/60
+    df_display['distance'] = round(df_display['distance']/1000,2)
+    df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
+    df_display['moving_time'] = pd.to_datetime(df['moving_time'], unit='m')
+    df_display['Average Speed (kmh)'] = df_display['distance']/df_display['moving_time']
+
+    st.dataframe(df_display)
 
     ########################
     ## Display 1 activity ##
