@@ -96,6 +96,8 @@ with st.form("activity_form"):
         activity_id = url.split("https://www.strava.com/activities/")[1]
 
         r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={[access_token]}")
+        st.json(r.json())
+
         map_polyline = r.json()['map']['polyline']
         map_coords = polyline.decode(map_polyline)
         map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
