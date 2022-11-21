@@ -74,9 +74,10 @@ st.markdown(link)
     ########################
     ## Display 1 activity ##
     ########################
-with st.form("activity_form"):
 
-    code = st.experimental_get_query_params()["code"][0]
+code = st.experimental_get_query_params()["code"][0]   
+
+with st.form("activity_form"):
 
     url = st.text_input("Paste activity URL")
     submit = st.form_submit_button("Get activity data")
@@ -88,6 +89,8 @@ with st.form("activity_form"):
                                 'client_secret': client_secret,
                                 'code': code,
                                 'grant_type': 'authorization_code'})
+
+        st.json(r.json())                        
 
         access_token = r.json()['access_token']
         refresh_token = r.json()['refresh_token']
