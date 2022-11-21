@@ -19,6 +19,10 @@ st.header('Custom Strava Dashboard')
 link = f'[Click here to authorise]({request_url})'
 st.markdown(link)
 
+##################
+## Show summary ##
+##################
+
 if st.button("Get Data"):
 
     code = st.experimental_get_query_params()["code"][0]
@@ -63,15 +67,22 @@ if st.button("Get Data"):
 
     st.dataframe(df_display)
 
+    ########################
+    ## Display 1 activity ##
+    ########################
+
+with st.form("authorise_form"):
+
     selected = st.multiselect("Choose activity: ", list(df_display.index))
-    to_display = df_display.loc[selected]
+    submit = st.form_submit_button("Show me")
 
-    st.dataframe(to_display)
+    if submit:
+        to_display = df_display.loc[selected]
 
-    df = df.loc[df['name'] == selected]
-    map_polyline = df['map']['polyline']
-    
-    map_coords = polyline.decode(map_polyline)
-    map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+        df = df.loc[df['name'] == selected]
+        map_polyline = df['map']['polyline']
+        
+        map_coords = polyline.decode(map_polyline)
+        map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
 
-    st.dataframe(map_df)
+        st.dataframe(map_df)
