@@ -67,28 +67,28 @@ if st.button("Get Data"):
     display = df_display.loc[selected]
     st.dataframe(display)
 
-    if 'selected' not in st.session_state:
-        st.session_state.selected = selected
+    # if 'selected' not in st.session_state:
+    #     st.session_state.selected = selected
 
-    # df_display['distance'] = round(df_display['distance']/1000,2)
-    # df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
-    # df_display['moving_time'] = df_display['moving_time']/60
+    # # df_display['distance'] = round(df_display['distance']/1000,2)
+    # # df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
+    # # df_display['moving_time'] = df_display['moving_time']/60
 
-    ########################
-    ## Display 1 activity ##
-    ########################
-    with st.form("activity_form"):
+    # ########################
+    # ## Display 1 activity ##
+    # ########################
+    # with st.form("activity_form"):
 
-        submit = st.form_submit_button("Get activity data")
+    #     submit = st.form_submit_button("Get activity data")
 
-        if submit:
+    #     if submit:
 
-            activity = df_display.loc[st.session_state.selected]
-            activity_id = df_display['id']
+    #         activity = df_display.loc[st.session_state.selected]
+    #         activity_id = df_display['id']
 
-            r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={[st.session_state.access_token]}")
-            map_polyline = r.json()['map']['polyline']
-            map_coords = polyline.decode(map_polyline)
-            map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
-            st.map(map_df)
+    #         r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={[st.session_state.access_token]}")
+    #         map_polyline = r.json()['map']['polyline']
+    #         map_coords = polyline.decode(map_polyline)
+    #         map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+    #         st.map(map_df)
 
