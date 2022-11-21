@@ -83,8 +83,8 @@ with st.form("activity_form"):
 
     if submit:
 
-        url = 'https://www.strava.com/oauth/token'
-        r = requests.post(url,  data={'client_id': client_id,
+        auth_url = 'https://www.strava.com/oauth/token'
+        r = requests.post(auth_url,  data={'client_id': client_id,
                                 'client_secret': client_secret,
                                 'code': code,
                                 'grant_type': 'authorization_code'})
@@ -92,8 +92,6 @@ with st.form("activity_form"):
         access_token = r.json()['access_token']
         refresh_token = r.json()['refresh_token']
         expires_at = r.json()['expires_at']
-
-        st.text(url)
 
         activity_id = url.split("https://www.strava.com/activities/")[1]
 
