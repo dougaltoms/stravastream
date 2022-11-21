@@ -58,37 +58,30 @@ if st.button("Get Data"):
     r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
     df = pd.DataFrame(r.json())
-    #df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
-    df_display = df[['name', 'id']]
+    df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type','id']]
     df_display = df_display.set_index("name")
 
-    selected = st.multiselect("Choose activity: ", list(df_display.index))
+    st.dataframe(df_display)
 
-    display = df_display.loc[selected]
-    st.dataframe(display)
+    # df_display['distance'] = round(df_display['distance']/1000,2)
+    # df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
+    # df_display['moving_time'] = df_display['moving_time']/60
 
-    # if 'selected' not in st.session_state:
-    #     st.session_state.selected = selected
+    ########################
+    ## Display 1 activity ##
+    ########################
+    with st.form("activity_form"):
 
-    # # df_display['distance'] = round(df_display['distance']/1000,2)
-    # # df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
-    # # df_display['moving_time'] = df_display['moving_time']/60
+        url = st.text_input("Paste activity URL")
+        submit = st.form_submit_button("Get activity data")
 
-    # ########################
-    # ## Display 1 activity ##
-    # ########################
-    # with st.form("activity_form"):
+        if submit:
 
-    #     submit = st.form_submit_button("Get activity data")
+            activity_id = url.split("https://www.strava.com/activities/")[1]
 
-    #     if submit:
-
-    #         activity = df_display.loc[st.session_state.selected]
-    #         activity_id = df_display['id']
-
-    #         r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={[st.session_state.access_token]}")
-    #         map_polyline = r.json()['map']['polyline']
-    #         map_coords = polyline.decode(map_polyline)
-    #         map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
-    #         st.map(map_df)
+            r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={[st.session_state.access_token]}")
+            map_polyline = r.json()['map']['polyline']
+            map_coords = polyline.decode(map_polyline)
+            map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+            st.map(map_df)
 
