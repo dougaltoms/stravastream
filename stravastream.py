@@ -95,7 +95,7 @@ with st.form("activity_form"):
         fullname = firstname + " " + lastname
 
         st.header(f"Hello, {fullname}")
-        
+
         access_token = r.json()['access_token']
         refresh_token = r.json()['refresh_token']
         expires_at = r.json()['expires_at']
@@ -108,4 +108,7 @@ with st.form("activity_form"):
         map_coords = polyline.decode(map_polyline)
         map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
         st.map(map_df)
+
+        r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}/streams?access_token={access_token}")
+        st.json(r.json())
 
