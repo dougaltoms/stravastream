@@ -93,6 +93,8 @@ with st.form("activity_form"):
         refresh_token = r.json()['refresh_token']
         expires_at = r.json()['expires_at']
 
+        st.text(url)
+
         activity_id = url.split("https://www.strava.com/activities/")[1]
 
         r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={[access_token]}")
