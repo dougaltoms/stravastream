@@ -16,13 +16,12 @@ st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strav
         , width=250)
 st.header('Custom Strava Dashboard')                  
 
-link = f'[Click here to authorise]({request_url})'
-st.markdown(link)
+#link = f'[Click here to authorise]({request_url})'
+link2 = f'<a href="{request_url}" target="_blank">New Tab</a>'
+st.markdown(link2)
+code = st.experimental_get_query_params()["code"]
 
-with st.form("We need your access token"):
-
-    code = st.text_input('Copy & Paste auth token here')
-    authorise = st.form_submit_button('Get Data')
+authorise = st.form_submit_button('Get Data')
 
 if authorise:
 
@@ -50,7 +49,7 @@ if authorise:
     df_display['distance'] = round(df_display['distance']/1000,2)
     df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
     df_display['moving_time'] = df_display['moving_time']/60
-    
+
     st.dataframe(df_display)
 
 
@@ -58,6 +57,7 @@ with st.form("Get activity stats"):
 
     activity_id = st.text_input('Copy & Paste activity ID  here')
     authorise = st.form_submit_button('Get Data')
+
     if authorise:
 
         r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={access_token}")
