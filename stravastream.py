@@ -58,31 +58,30 @@ if st.button("Get Data"):
     r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
     df = pd.DataFrame(r.json())
-    df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
+    #df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
+    df_display = df[['name', 'id']]
     df_display = df_display.set_index("name")
 
-    df_display['distance'] = round(df_display['distance']/1000,2)
-    df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
-    df_display['moving_time'] = df_display['moving_time']/60
+    selected = st.multiselect("Choose activity: ", list(df_display.index))
 
-    st.dataframe(df_display)
+    if 'selected' not in st.session_state:
+        st.session_sate['selected'] = selected
+
+    # df_display['distance'] = round(df_display['distance']/1000,2)
+    # df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
+    # df_display['moving_time'] = df_display['moving_time']/60
 
     ########################
     ## Display 1 activity ##
     ########################
+    if selected:
 
-    with st.form("authorise_form"):
+        activity = df_display.loc[st.session_state.selected]
+        activity_id = df_display['id']
 
-        selected = st.multiselect("Choose activity: ", list(df_display.index))
-        submit = st.form_submit_button("Show me")
+        r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={[st.session_state.access_token]}")
+        map_polyline = r.json()['map']['polyline']
+        map_coords = polyline.decode(map_polyline)
+        map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+        st.map(map_df)
 
-        if submit:
-            to_display = df_display.loc[selected]
-
-            df = df.loc[df['name'] == selected]
-            map_polyline = df['map']['polyline']
-            
-            map_coords = polyline.decode(map_polyline)
-            map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
-
-            st.dataframe(map_df)
