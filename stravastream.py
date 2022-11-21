@@ -90,16 +90,19 @@ with st.form("activity_form"):
                                 'code': code,
                                 'grant_type': 'authorization_code'})
 
-        st.json(r.json())                        
+        firstname = r.json()['athlete']['firstname']
+        lastname = r.json()['athlete']['lastname']
+        fullname = firstname + " " + lastname
 
+        st.header(f"Hello, {fullname}")
+        
         access_token = r.json()['access_token']
         refresh_token = r.json()['refresh_token']
         expires_at = r.json()['expires_at']
 
         activity_id = url.split("https://www.strava.com/activities/")[1]
 
-        r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={[access_token]}")
-        st.json(r.json())
+        r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={access_token}")
 
         map_polyline = r.json()['map']['polyline']
         map_coords = polyline.decode(map_polyline)
