@@ -53,6 +53,8 @@ if st.button("Get Data"):
 
     r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
+    st.json(r.json())
+
     df = pd.DataFrame(r.json())
     df_display = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type']]
     df_display = df_display.set_index("name")
@@ -62,7 +64,7 @@ if st.button("Get Data"):
     df_display['moving_time'] = df_display['moving_time']/60
     
 
-    selected = st.multiselect("Choose activity: ", list(df_display.index))
+    selected = st.multiselect("Choose activity: ", list(df_display.index) ,df_display['name'][0])
     to_display = df_display.loc[selected]
 
     st.dataframe(to_display)
