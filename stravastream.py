@@ -64,6 +64,9 @@ if st.button("Get Data"):
 
     selected = st.multiselect("Choose activity: ", list(df_display.index))
 
+    display = df_display.loc[selected]
+    st.dataframe(display)
+
     if 'selected' not in st.session_state:
         st.session_state.selected = selected
 
@@ -74,14 +77,18 @@ if st.button("Get Data"):
     ########################
     ## Display 1 activity ##
     ########################
-    if selected:
+    with st.form("activity_form"):
 
-        activity = df_display.loc[st.session_state.selected]
-        activity_id = df_display['id']
+        submit = st.form_submit_button("Get activity data")
 
-        r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={[st.session_state.access_token]}")
-        map_polyline = r.json()['map']['polyline']
-        map_coords = polyline.decode(map_polyline)
-        map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
-        st.map(map_df)
+        if submit:
+
+            activity = df_display.loc[st.session_state.selected]
+            activity_id = df_display['id']
+
+            r = requests.get(f"http://www.strava.com/api/v3/activities/{activity_id}?access_token={[st.session_state.access_token]}")
+            map_polyline = r.json()['map']['polyline']
+            map_coords = polyline.decode(map_polyline)
+            map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+            st.map(map_df)
 
