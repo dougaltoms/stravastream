@@ -18,7 +18,7 @@ st.header('Custom Strava Dashboard')
 
 link = f'[Click here to authorise]({request_url})'
 
-if st.button(st.markdown(link)):
+if st.button("Get Data"):
 
     code = st.experimental_get_query_params()["code"][0]
     st.write(code)
