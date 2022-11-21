@@ -61,7 +61,9 @@ if st.button("Get Data"):
     df_display['total_elevation_gain'] = round(df_display['total_elevation_gain'],2)
     df_display['moving_time'] = df_display['moving_time']/60
 
-    selected = st.multiselect("Choose activity: ", list(df_display.index) ,df_display['name'][0])
+    st.dataframe(df_display)
+
+    selected = st.multiselect("Choose activity: ", list(df_display.index))
     to_display = df_display.loc[selected]
 
     st.dataframe(to_display)
