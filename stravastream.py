@@ -138,19 +138,17 @@ if st.button('Get Data'):
     # create empty container for the dashboard
     placeholder = st.empty()
 
-    with placeholder.container:
+    col1, col2 = st.columns(2)
 
-        col1, col2 = st.columns(2)
+    col1.metric(
+        label="Distance (km)",
+        value = round(df['distance'].loc[df.index[0]]/1000,2),
+        delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
+    )
 
-        col1.metric(
-            label="Distance (km)",
-            value = round(df['distance'].loc[df.index[0]]/1000,2),
-            delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
-        )
-
-        col2.metric(
-            label="Time (mins)",
-            value = round(df['moving_time'].loc[df.index[0]]/60,2),
-            delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
-        )
+    col2.metric(
+        label="Time (mins)",
+        value = round(df['moving_time'].loc[df.index[0]]/60,2),
+        delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
+    )
 
