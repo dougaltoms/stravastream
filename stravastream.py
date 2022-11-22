@@ -38,41 +38,45 @@ st.markdown(link)
 
 if st.button("Get Data"):
 
-    code = st.experimental_get_query_params()["code"][0]
-
-    if 'code' not in st.session_state:
-        st.session_state['code'] = code
-
-    url = 'https://www.strava.com/oauth/token'
-    r = requests.post(url,  data={'client_id': client_id,
-                            'client_secret': client_secret,
-                            'code': code,
-                            'grant_type': 'authorization_code'})
-
-    access_token = r.json()['access_token']
-    refresh_token = r.json()['refresh_token']
-    expires_at = r.json()['expires_at']
-
-    r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
-
-    df = pd.json_normalize(r.json())
-    #df = pd.read_csv("https://raw.githubusercontent.com/dougaltoms/stravastream/main/test.csv")
-
-    # dashboard title
-    st.title("Real-time Strava Analysis")
-
-    # set filter
-    name_filter = st.selectbox("Select activity", df['name'])
-
     # create empty container for the dashboard
     placeholder = st.empty()
 
-    # df where 'name' == chosen name
-    df = df[df["name"] == name_filter]
-
-    # create key metric from chosen activity
     with placeholder.container():
-        
+
+        code = st.experimental_get_query_params()["code"][0]
+
+        if 'code' not in st.session_state:
+            st.session_state['code'] = code
+
+        url = 'https://www.strava.com/oauth/token'
+        r = requests.post(url,  data={'client_id': client_id,
+                                'client_secret': client_secret,
+                                'code': code,
+                                'grant_type': 'authorization_code'})
+
+        access_token = r.json()['access_token']
+        refresh_token = r.json()['refresh_token']
+        expires_at = r.json()['expires_at']
+
+        r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
+
+        df = pd.json_normalize(r.json())
+        #df = pd.read_csv("https://raw.githubusercontent.com/dougaltoms/stravastream/main/test.csv")
+
+        # dashboard title
+        st.title("Real-time Strava Analysis")
+
+        # set filter
+        name_filter = st.selectbox("Select activity", df['name'])
+
+        # create empty container for the dashboard
+        placeholder = st.empty()
+
+        # df where 'name' == chosen name
+        df = df[df["name"] == name_filter]
+
+        # create key metric from chosen activity
+    
         col1, col2 = st.columns(2)
 
         col1.metric(
@@ -87,16 +91,14 @@ if st.button("Get Data"):
             delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
         )
 
-        # some basic plots
-        fig_col1 = st.columns(1)
+        # # some basic plots
+        # fig_col1 = st.columns(1)
 
-        with fig_col1:
-            st.markdown("## Map")
-            pline=df['map'][1]['summary_polyline']
-            map_coords = polyline.decode(pline)
-            map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
-            st.map(map_df)
+        # with fig_col1:
+        #     st.markdown("## Map")
+        #     pline=df['map'][1]['summary_polyline']
+        #     map_coords = polyline.decode(pline)
+        #     map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+        #     st.map(map_df)
 
-    # # real-time (ish) updates using for loop
-    # for seconds in range(200):
-
+ 
