@@ -36,7 +36,7 @@ st.markdown(link)
 ## Get Data ##
 ##############
 
-if st.button("Get Data"):
+def stravastream():
 
     # create empty container for the dashboard
     placeholder = st.empty()
@@ -61,8 +61,7 @@ if st.button("Get Data"):
         r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
         df = pd.json_normalize(r.json())
-        #df = pd.read_csv("https://raw.githubusercontent.com/dougaltoms/stravastream/main/test.csv")
-
+        
         # dashboard title
         st.title("Real-time Strava Analysis")
 
@@ -94,14 +93,5 @@ if st.button("Get Data"):
             delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
         )
 
-        # # some basic plots
-        # fig_col1 = st.columns(1)
-
-        # with fig_col1:
-        #     st.markdown("## Map")
-        #     pline=df['map'][1]['summary_polyline']
-        #     map_coords = polyline.decode(pline)
-        #     map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
-        #     st.map(map_df)
-
- 
+if st.button("Get Data"):
+    stravastream()
