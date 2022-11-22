@@ -36,7 +36,7 @@ st.markdown(link)
 ## Get Data ##
 ##############
 
-@st.cache
+#@st.cache
 def stravastream():
 
     # create empty container for the dashboard
