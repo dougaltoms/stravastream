@@ -67,13 +67,16 @@ if st.button("Get Data"):
         st.title("Real-time Strava Analysis")
 
         # set filter
-        name_filter = st.selectbox("Select activity", df['name'])
+        name_filter = st.selectbox("Select activity", df['name'], key='name_filter')
+
+        if 'name_filter' not in st.session_state:
+            st.session_state.name_filter = name_filter
 
         # create empty container for the dashboard
         placeholder = st.empty()
 
         # df where 'name' == chosen name
-        df = df[df["name"] == name_filter]
+        df = df[df["name"] == st.session_state.name_filter]
 
         # create key metric from chosen activity
     
