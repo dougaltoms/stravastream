@@ -8,18 +8,18 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-df=  pd.read_csv("https://github.com/dougaltoms/stravastream/blob/main/test.csv")
+data_link = pd.read_csv("https://raw.githubusercontent.com/dougaltoms/stravastream/main/test.csv")
 
 st.set_page_config("Your Strava Analysis",
                     "🚴‍♂️",
                     "wide")
 
 # read csv from url and store in st memory
-# @st.experimental_memo
-# def get_data():
-#     return pd.read_csv(data_link)
+@st.experimental_memo
+def get_data():
+     return pd.read_csv(data_link)
 
-# df = get_data()
+df = get_data()
 
 # dashboard title
 st.title("Real-time Strava Analysis")
@@ -35,7 +35,7 @@ df = df[df["name"] == name_filter]
 
 # create key metric from chosen activity
 with placeholder.container():
-
+    
     metric1, metric2 = st.columns(2)
 
     metric1.metric(
@@ -54,7 +54,6 @@ with placeholder.container():
     fig_col1 = st.columns(1)
 
     with fig_col1:
-        
         st.markdown("## Map")
         pline=df['map'][1]['summary_polyline']
         map_coords = polyline.decode(pline)
