@@ -8,18 +8,18 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-data_link = pd.read_csv("https://raw.githubusercontent.com/dougaltoms/stravastream/main/test.csv")
+df = pd.read_csv("https://raw.githubusercontent.com/dougaltoms/stravastream/main/test.csv")
 
 st.set_page_config("Your Strava Analysis",
                     "🚴‍♂️",
                     "wide")
 
 # read csv from url and store in st memory
-@st.experimental_memo
-def get_data():
-     return pd.read_csv(data_link)
+# @st.experimental_memo
+# def get_data():
+#      return pd.read_csv(data_link)
 
-df = get_data()
+# df = get_data()
 
 # dashboard title
 st.title("Real-time Strava Analysis")
