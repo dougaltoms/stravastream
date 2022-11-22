@@ -36,29 +36,23 @@ df = df[df["name"] == name_filter]
 # create key metric from chosen activity
 with placeholder.container():
     
-    metric1, metric2 = st.columns(2)
+    metric1 = st.columns(1)
 
     metric1.metric(
         label="Distance (km)",
-        value = round(df["distance"]/1000),
-        delta = 100-round(df["distance"]/1000)
-    )
-
-    metric2.metric(
-        label="Elevation",
-        value = round(df["total_elevation_gain"]),
-        delta = 1000-round(df["total_elevation_gain"])
+        value = round(df["distance"][1]/1000,2),
+        delta = 100-round(df["distance"][1]/1000,2)
     )
 
     # some basic plots
     fig_col1 = st.columns(1)
 
-    with fig_col1:
-        st.markdown("## Map")
-        pline=df['map'][1]['summary_polyline']
-        map_coords = polyline.decode(pline)
-        map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
-        st.map(map_df)
+    # with fig_col1:
+    #     st.markdown("## Map")
+    #     pline=df['map'][1]['summary_polyline']
+    #     map_coords = polyline.decode(pline)
+    #     map_df = pd.DataFrame(map_coords, columns =['lat', 'lon'])
+    #     st.map(map_df)
 
 # # real-time (ish) updates using for loop
 # for seconds in range(200):
