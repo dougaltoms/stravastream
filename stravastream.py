@@ -40,14 +40,14 @@ with placeholder.container():
 
     col1.metric(
         label="Distance (km)",
-        value = round(df["distance"][1]/1000,2),
-        delta = 100-round(df["distance"][1]/1000,2)
+        value = round(df['distance'].loc[df.index[0]]/1000,2),
+        delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
     )
 
     col2.metric(
         label="Time (mins)",
-        value = round(df["moving_time"][1]/60,2),
-        delta = 100-round(df["moving_time"][1]/60,2)
+        value = round(df['moving_time'].loc[df.index[0]]/60,2),
+        delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
     )
 
     # some basic plots
