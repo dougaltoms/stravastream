@@ -16,9 +16,9 @@ st.set_page_config("Your Strava Analysis",
 # ## Authorisation ##
 # ###################
 
-# client_id = st.secrets['client_id']
-# client_secret = st.secrets['client_secret']
-# redirect_url = st.secrets['redirect_url']
+client_id = st.secrets['client_id']
+client_secret = st.secrets['client_secret']
+redirect_url = st.secrets['redirect_url']
 
 request_url = f'http://www.strava.com/oauth/authorize?client_id={client_id}' \
                   f'&response_type=code&redirect_uri={redirect_url}' \
@@ -103,10 +103,6 @@ st.markdown(link)
 
 @st.cache
 def load_data():
-
-    client_id = st.secrets['client_id']
-    client_secret = st.secrets['client_secret']
-    redirect_url = st.secrets['redirect_url']
 
     code = st.experimental_get_query_params()["code"][0]
 
