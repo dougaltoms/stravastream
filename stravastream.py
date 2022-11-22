@@ -8,9 +8,9 @@
 # import streamlit as st
 # import requests
 
-# st.set_page_config("Your Strava Analysis",
-#                     "🚴‍♂️",
-#                     "wide")
+st.set_page_config("Your Strava Analysis",
+                    "🚴‍♂️",
+                    "wide")
 
 # ###################
 # ## Authorisation ##
@@ -20,17 +20,17 @@
 # client_secret = st.secrets['client_secret']
 # redirect_url = st.secrets['redirect_url']
 
-# request_url = f'http://www.strava.com/oauth/authorize?client_id={client_id}' \
-#                   f'&response_type=code&redirect_uri={redirect_url}' \
-#                   f'&approval_prompt=force' \
-#                   f'&scope=profile:read_all,activity:read_all'
+request_url = f'http://www.strava.com/oauth/authorize?client_id={client_id}' \
+                  f'&response_type=code&redirect_uri={redirect_url}' \
+                  f'&approval_prompt=force' \
+                  f'&scope=profile:read_all,activity:read_all'
 
-# st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strava-logo-png-4.png?fit=1200%2C1198&ssl=1'
-#         , width=200)
-# st.header('Custom Strava Dashboard')                  
+st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strava-logo-png-4.png?fit=1200%2C1198&ssl=1'
+        , width=200)
+st.header('Custom Strava Dashboard')                  
 
-# link = f'[Click here to authorise]({request_url})'
-# st.markdown(link)
+link = f'[Click here to authorise]({request_url})'
+st.markdown(link)
 
 # ##############
 # ## Get Data ##
@@ -104,12 +104,12 @@ import streamlit as st
 import pandas as pd
 import requests
 
-client_id = st.secrets['client_id']
-client_secret = st.secrets['client_secret']
-redirect_url = st.secrets['redirect_url']
-
 @st.cache
 def load_data():
+
+    client_id = st.secrets['client_id']
+    client_secret = st.secrets['client_secret']
+    redirect_url = st.secrets['redirect_url']
 
     code = st.experimental_get_query_params()["code"][0]
 
@@ -127,33 +127,37 @@ def load_data():
 
     return df
 
-df = load_data()
 
-# dashboard title
-st.title("Real-time Strava Analysis")
+if st.button('Get Data'):
 
-# set filter
-name_filter = st.selectbox("Select activity", df['name'], key='name_filter')
 
-# df where 'name' == chosen name
-df = df[df["name"] == st.session_state.name_filter]
+    df = load_data()
 
-# create empty container for the dashboard
-placeholder = st.empty()
+    # dashboard title
+    st.title("Real-time Strava Analysis")
 
-with placeholder.container:
+    # set filter
+    name_filter = st.selectbox("Select activity", df['name'], key='name_filter')
 
-    col1, col2 = st.columns(2)
+    # df where 'name' == chosen name
+    df = df[df["name"] == st.session_state.name_filter]
 
-    col1.metric(
-        label="Distance (km)",
-        value = round(df['distance'].loc[df.index[0]]/1000,2),
-        delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
-    )
+    # create empty container for the dashboard
+    placeholder = st.empty()
 
-    col2.metric(
-        label="Time (mins)",
-        value = round(df['moving_time'].loc[df.index[0]]/60,2),
-        delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
-    )
+    with placeholder.container:
+
+        col1, col2 = st.columns(2)
+
+        col1.metric(
+            label="Distance (km)",
+            value = round(df['distance'].loc[df.index[0]]/1000,2),
+            delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
+        )
+
+        col2.metric(
+            label="Time (mins)",
+            value = round(df['moving_time'].loc[df.index[0]]/60,2),
+            delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
+        )
 
