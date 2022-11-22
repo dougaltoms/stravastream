@@ -2,11 +2,11 @@
 # ######### TEST DASHBOARD #################
 # ##########################################
 
-# import polyline
-# import numpy as np
-# import pandas as pd
-# import streamlit as st
-# import requests
+import polyline
+import numpy as np
+import pandas as pd
+import streamlit as st
+import requests
 
 st.set_page_config("Your Strava Analysis",
                     "🚴‍♂️",
@@ -100,9 +100,6 @@ st.markdown(link)
 # if st.button("Get Data"):
 #     stravastream()
 
-import streamlit as st
-import pandas as pd
-import requests
 
 @st.cache
 def load_data():
