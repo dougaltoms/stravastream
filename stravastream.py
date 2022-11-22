@@ -132,23 +132,27 @@ if st.button('Get Data'):
     # set filter
     name_filter = st.selectbox("Select activity", df['name'], key='name_filter')
 
-    # df where 'name' == chosen name
-    df = df[df["name"] == st.session_state.name_filter]
+    if len(name_filter) > 0:
+    
+        # df where 'name' == chosen name
+        df = df[df["name"] == st.session_state.name_filter]
 
-    # create empty container for the dashboard
-    placeholder = st.empty()
+        # create empty container for the dashboard
+        placeholder = st.empty()
 
-    col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
 
-    col1.metric(
-        label="Distance (km)",
-        value = round(df['distance'].loc[df.index[0]]/1000,2),
-        delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
-    )
+        col1.metric(
+            label="Distance (km)",
+            value = round(df['distance'].loc[df.index[0]]/1000,2),
+            delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
+        )
 
-    col2.metric(
-        label="Time (mins)",
-        value = round(df['moving_time'].loc[df.index[0]]/60,2),
-        delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
-    )
+        col2.metric(
+            label="Time (mins)",
+            value = round(df['moving_time'].loc[df.index[0]]/60,2),
+            delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
+        )
 
+    else:
+        pass
