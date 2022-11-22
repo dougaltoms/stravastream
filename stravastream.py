@@ -49,20 +49,38 @@ def stravastream():
         if 'code' not in st.session_state:
             st.session_state['code'] = code
 
-        url = 'https://www.strava.com/oauth/token'
-        r = requests.post(url,  data={'client_id': client_id,
-                                'client_secret': client_secret,
-                                'code': code,
-                                'grant_type': 'authorization_code'})
+        try:
+            url = 'https://www.strava.com/oauth/token'
+            r = requests.post(url,  data={'client_id': client_id,
+                                    'client_secret': client_secret,
+                                    'code': code,
+                                    'grant_type': 'authorization_code'})
 
-        access_token = r.json()['access_token']
-        refresh_token = r.json()['refresh_token']
-        expires_at = r.json()['expires_at']
+            access_token = r.json()['access_token']
+            refresh_token = r.json()['refresh_token']
 
-        r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
+            if 'refresh_token' not in st.session_state:
+                st.session_state['refresh_token'] = refresh_token
 
-        df = pd.json_normalize(r.json())
-        
+            r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
+
+            df = pd.json_normalize(r.json())
+
+        except:
+
+            url = 'https://www.strava.com/oauth/token'
+            r = requests.post(url,  data={'client_id': client_id,
+                                    'client_secret': client_secret,
+                                    'grant_type': 'refresh_token',
+                                    'refresh_token':st.session_state['refresh_token']})
+
+            access_token = r.json()['access_token']
+            refresh_token = r.json()['refresh_token']
+
+            r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
+
+            df = pd.json_normalize(r.json())
+
         # dashboard title
         st.title("Real-time Strava Analysis")
 
