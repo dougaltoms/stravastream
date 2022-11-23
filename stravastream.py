@@ -90,14 +90,14 @@ def stravastream():
 
     metric1.metric(
         label="Distance (km)",
-        value = round(df["distance"]),
-        delta = 100-round(df["distance"])
+        value = round(df["distance"][1]),
+        delta = 100-round(df["distance"][1])
     )
 
     metric2.metric(
         label="Elevation",
-        value = round(df["total_elevation_gain"]),
-        delta = 1000-round(df["total_elevation_gain"])
+        value = round(df["total_elevation_gain"][1]),
+        delta = 1000-round(df["total_elevation_gain"][1])
     )
 
     metric3.metric(
