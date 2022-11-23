@@ -24,7 +24,7 @@ st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strav
 st.header('Custom Strava Dashboard')                  
 
 link = f'[Click here to authorise]({request_url})'
-st.button(st.markdown(link))
+st.markdown(link)
 
 def main():
     
