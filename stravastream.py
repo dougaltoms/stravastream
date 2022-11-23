@@ -62,12 +62,10 @@ def stravastream():
 
         try:
             df = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type','id']]
-            df['distance'] = round(df['distance']/1000,2)
+            df['distance'] = round(df['distance'].loc[df.index[0]]/1000,2)
             df['total_elevation_gain'] = round(df['total_elevation_gain'])
-            df['moving_time'] = df['moving_time'].astype('float64') 
-            df['moving_time'] = pd.to_datetime(df["moving_time"], unit='m')
-            df['Average Speed (kmh)'] = df['distance']/df['moving_time']
-
+            df['moving_time'] = round(df['moving_time'].loc[df.index[0]]/60,2)
+            df['Average Speed (kmh)'] = df['distance'].loc[df.index[0]]/df['moving_time'].loc[df.index[0]]
             return df
         
         except:
@@ -86,25 +84,25 @@ def stravastream():
     summary = create_summary(df)
 
     # create key metric from chosen activity
-    metric1, metric2, metric3 = st.columns(3)
+    metric1, metric2 = st.columns(2)
 
     metric1.metric(
         label="Distance (km)",
-        value = round(df["distance"][1]),
-        delta = 100-round(df["distance"][1])
+        value = round(df['distance'].loc[df.index[0]]/1000,2),
+        delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
     )
 
     metric2.metric(
         label="Elevation",
-        value = round(df["total_elevation_gain"][1]),
-        delta = 1000-round(df["total_elevation_gain"][1])
+        value = round(df["total_elevation_gain"].loc[df.index[0]]),
+        delta = 1000-round(df["total_elevation_gain"].loc[df.index[0]])
     )
 
-    metric3.metric(
-        label = "Speed (km/h)",
-        value = round(df["speed"],2),
-        delta = (round(df["speed"],2)/50*100)
-    )
+    # metric3.metric(
+    #     label = "Speed (km/h)",
+    #     value = round(df["speed"],2),
+    #     delta = (round(df["speed"],2)/50*100)
+    # )
 
     st.dataframe(summary)
 
