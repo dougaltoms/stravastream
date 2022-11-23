@@ -28,8 +28,6 @@ st.markdown(link)
 
 def main():
     
-    # set up side menu
-    st.sidebar.title("Strava Analysis")
     get_data = st.button("Get data")
 
     if get_data:
@@ -39,7 +37,7 @@ def main():
 def stravastream():
 
     # Load athlete data as DF using Strava API V3
-    @st.experimental_memo
+    @st.experimental_singleton
     def load_data():
 
         code = st.experimental_get_query_params()["code"][0]
@@ -64,9 +62,8 @@ def stravastream():
 
         try:
             df = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type','id']]
-            df = df.set_index("name")
             df['distance'] = round(df['distance']/1000,2)
-            df['total_elevation_gain'] = round(df['total_elevation_gain'],2)
+            df['total_elevation_gain'] = round(df['total_elevation_gain'])
             df['moving_time'] = df['moving_time'].astype('float64') 
             df['moving_time'] = pd.to_datetime(df["moving_time"], unit='m')
             df['Average Speed (kmh)'] = df['distance']/df['moving_time']
@@ -77,8 +74,37 @@ def stravastream():
 
             return df
 
+    # filter df by chosen name
+    def filterdata(df, name):
+        return df[df["name"] == name]
+
+
+    # execute functions
     df = load_data()
+    name_filter = st.selectbox("Select activity", df['name'])
+    df = filterdata(df, name_filter)
     summary = create_summary(df)
+
+    # create key metric from chosen activity
+    metric1, metric2, metric3 = st.columns(3)
+
+    metric1.metric(
+        label="Distance (km)",
+        value = round(df["distance"]),
+        delta = 100-round(df["distance"])
+    )
+
+    metric2.metric(
+        label="Elevation",
+        value = round(df["total_elevation_gain"]),
+        delta = 1000-round(df["total_elevation_gain"])
+    )
+
+    metric3.metric(
+        label = "Speed (km/h)",
+        value = round(df["speed"],2),
+        delta = (round(df["speed"],2)/50*100)
+    )
 
     st.dataframe(summary)
 
