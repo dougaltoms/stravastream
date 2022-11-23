@@ -1,11 +1,5 @@
-# ##########################################
-# ######### TEST DASHBOARD #################
-# ##########################################
-
-import polyline
-import numpy as np
-import pandas as pd
 import streamlit as st
+import pandas as pd
 import requests
 
 st.set_page_config("Your Strava Analysis",
@@ -30,129 +24,63 @@ st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strav
 st.header('Custom Strava Dashboard')                  
 
 link = f'[Click here to authorise]({request_url})'
-st.markdown(link)
+st.button(st.markdown(link))
 
-# ##############
-# ## Get Data ##
-# ##############
+def main():
+    
+    # set up side menu
+    st.sidebar.title("Strava Analysis")
+    get_data = st.button("Get data")
 
-# #@st.cache
-# def stravastream():
+    if get_data:
+        stravastream()
+        get_data = False
 
-#     # create empty container for the dashboard
-#     placeholder = st.empty()
+def stravastream():
 
-#     with placeholder.container():
+    # Load athlete data as DF using Strava API V3
+    @st.experimental_memo
+    def load_data():
 
-#         code = st.experimental_get_query_params()["code"][0]
+        code = st.experimental_get_query_params()["code"][0]
 
-#         if 'code' not in st.session_state:
-#             st.session_state['code'] = code
+        url = 'https://www.strava.com/oauth/token'
+        r = requests.post(url,  data={'client_id': client_id,
+                                    'client_secret': client_secret,
+                                    'code': code,
+                                    'grant_type': 'authorization_code'})
 
+        access_token = r.json()['access_token']
         
-#         url = 'https://www.strava.com/oauth/token'
-#         r = requests.post(url,  data={'client_id': client_id,
-#                                 'client_secret': client_secret,
-#                                 'code': code,
-#                                 'grant_type': 'authorization_code'})
+        r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
 
-#         access_token = r.json()['access_token']
-#         refresh_token = r.json()['refresh_token']
+        df = pd.json_normalize(r.json())
 
-#         if 'refresh_token' not in st.session_state:
-#             st.session_state['refresh_token'] = refresh_token
+        return df
 
-#         r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
+    # Create DF to display
+    st.experimental_memo
+    def create_summary(df):
 
-#         df = pd.json_normalize(r.json())
+        try:
+            df = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type','id']]
+            df = df.set_index("name")
+            df['distance'] = round(df['distance']/1000,2)
+            df['total_elevation_gain'] = round(df['total_elevation_gain'],2)
+            df['moving_time'] = df['moving_time'].astype('float64') 
+            df['moving_time'] = pd.to_datetime(df["moving_time"], unit='m')
+            df['Average Speed (kmh)'] = df['distance']/df['moving_time']
 
-#         # dashboard title
-#         st.title("Real-time Strava Analysis")
+            return df
+        
+        except:
 
-#         # set filter
-#         name_filter = st.selectbox("Select activity", df['name'], key='name_filter')
-
-#         if 'name_filter' not in st.session_state:
-#             st.session_state.name_filter = name_filter
-
-#         # create empty container for the dashboard
-#         placeholder = st.empty()
-
-#         # df where 'name' == chosen name
-#         df = df[df["name"] == st.session_state.name_filter]
-
-#         # create key metric from chosen activity
-    
-#         col1, col2 = st.columns(2)
-
-#         col1.metric(
-#             label="Distance (km)",
-#             value = round(df['distance'].loc[df.index[0]]/1000,2),
-#             delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
-#         )
-
-#         col2.metric(
-#             label="Time (mins)",
-#             value = round(df['moving_time'].loc[df.index[0]]/60,2),
-#             delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
-#         )
-
-# if st.button("Get Data"):
-#     stravastream()
-
-
-@st.cache
-def load_data():
-
-    code = st.experimental_get_query_params()["code"][0]
-
-    url = 'https://www.strava.com/oauth/token'
-    r = requests.post(url,  data={'client_id': client_id,
-                                'client_secret': client_secret,
-                                'code': code,
-                                'grant_type': 'authorization_code'})
-
-    access_token = r.json()['access_token']
-    
-    r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
-
-    df = pd.json_normalize(r.json())
-
-    return df
-
-
-if st.button('Get Data'):
-
+            return df
 
     df = load_data()
+    summary = create_summary(df)
 
-    # dashboard title
-    st.title("Real-time Strava Analysis")
+    st.dataframe(summary)
 
-    # set filter
-    name_filter = st.selectbox("Select activity", df['name'], key='name_filter')
-
-    if len(name_filter) > 0:
-    
-        # df where 'name' == chosen name
-        df = df[df["name"] == st.session_state.name_filter]
-
-        # create empty container for the dashboard
-        placeholder = st.empty()
-
-        col1, col2 = st.columns(2)
-
-        col1.metric(
-            label="Distance (km)",
-            value = round(df['distance'].loc[df.index[0]]/1000,2),
-            delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
-        )
-
-        col2.metric(
-            label="Time (mins)",
-            value = round(df['moving_time'].loc[df.index[0]]/60,2),
-            delta = 100-round(df['moving_time'].loc[df.index[0]]/1000,2)
-        )
-
-    else:
-        pass
+if __name__ == "__main__":
+    main()
