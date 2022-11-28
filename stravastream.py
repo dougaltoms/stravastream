@@ -134,10 +134,12 @@ def stravastream():
 
     access_token = get_access_token()
     check_expiry(access_token)
-    ftp = ftp()
+    
     greeting = athlete()
+    ftp_ = ftp()
+
     st.header(greeting)
-    st.write(ftp)
+    st.write(ftp_)
 
     limit = st.slider("Number of activities", min_value=0, max_value=100)
 
