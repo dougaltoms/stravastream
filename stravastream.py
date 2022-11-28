@@ -144,8 +144,9 @@ def stravastream():
     st.write(ftp_)
 
     check_expiry(access_token)
-    activities = activities(100)
-    st.dataframe(activities)
+
+    activities_ = activities(100)
+    st.dataframe(activities_)
 
 if __name__ == "__main__":
     main()
