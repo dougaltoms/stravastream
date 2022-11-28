@@ -93,7 +93,7 @@ def stravastream():
 
     @st.experimental_singleton
     def ftp():
-        ftp = athlete.ftp
+        ftp = client.get_athlete().ftp
 
         try:
 
