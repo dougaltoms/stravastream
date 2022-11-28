@@ -1,29 +1,37 @@
 import streamlit as st
 import pandas as pd
-import requests
+import time
+from stravalib.client import Client
 
 st.set_page_config("Your Strava Analysis",
                     "🚴‍♂️",
                     "wide")
 
+st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strava-logo-png-4.png?fit=1200%2C1198&ssl=1'
+        , width=200)
+st.header('Custom Strava Dashboard')     
+
 # ###################
 # ## Authorisation ##
 # ###################
 
-client_id = st.secrets['client_id']
-client_secret = st.secrets['client_secret']
-redirect_url = st.secrets['redirect_url']
+CLIENT_ID = st.secrets['client_id']
+CLIENT_SECRET = st.secrets['client_secret']
+REDIRECT_URL = st.secrets['redirect_url']
 
-request_url = f'http://www.strava.com/oauth/authorize?client_id={client_id}' \
-                  f'&response_type=code&redirect_uri={redirect_url}' \
-                  f'&approval_prompt=force' \
-                  f'&scope=profile:read_all,activity:read_all'
+client = Client()
 
-st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strava-logo-png-4.png?fit=1200%2C1198&ssl=1'
-        , width=200)
-st.header('Custom Strava Dashboard')                  
+def auth_url():
 
-link = f'[Click here to authorise]({request_url})'
+    auth_url = client.authorization_url(client_id=CLIENT_ID,
+                            redirect_uri=REDIRECT_URL,
+                            scope=["read_all", "profile:read_all", "activity:read_all"])
+
+    return auth_url
+
+auth_url = auth_url()
+  
+link = f'[Click here to authorise]({auth_url})'
 st.markdown(link)
 
 def main():
@@ -36,75 +44,59 @@ def main():
 
 def stravastream():
 
-    # Load athlete data as DF using Strava API V3
-    @st.experimental_singleton
-    def load_data():
+    @st.experimental_memo
+    def get_access_token():
 
         code = st.experimental_get_query_params()["code"][0]
+        access_token = client.exchange_code_for_token(CLIENT_ID, CLIENT_SECRET, code)
 
-        url = 'https://www.strava.com/oauth/token'
-        r = requests.post(url,  data={'client_id': client_id,
-                                    'client_secret': client_secret,
-                                    'code': code,
-                                    'grant_type': 'authorization_code'})
+        return access_token
 
-        access_token = r.json()['access_token']
-        
-        r = requests.get(f"http://www.strava.com/api/v3/athlete/activities?access_token={access_token}")
+    access_token = get_access_token()
 
-        df = pd.json_normalize(r.json())
+    @st.experimental_memo
+    def check_expiry(access_token):
 
-        return df
+        if time.time() > access_token['expires_at']:
+            refresh_response = client.refresh_access_token(CLIENT_ID, CLIENT_SECRET, access_token['refresh_token'])
+            access_token = refresh_response
 
-    # Create DF to display
-    st.experimental_memo
-    def create_summary(df):
+            client.access_token = refresh_response['acess_token']
+            client.refresh_token = refresh_response['refresh_token']
+            client.token_expires_at = refresh_response['expires_at']
 
-        try:
-            df = df[['name', 'distance', 'moving_time', 'total_elevation_gain','sport_type','id']]
-            df['distance'] = round(df['distance'].loc[df.index[0]]/1000,2)
-            df['total_elevation_gain'] = round(df['total_elevation_gain'])
-            df['moving_time'] = round(df['moving_time'].loc[df.index[0]]/60,2)
-            df['Average Speed (kmh)'] = df['distance'].loc[df.index[0]]/df['moving_time'].loc[df.index[0]]
-            return df
-        
-        except:
+            if 'access_token' not in st.session_state:
+                st.session_state['access_token'] = client.access_token
+            if 'refresh_token' not in st.session_state:
+                st.session_state['refresh_token'] = client.refresh_token
+            if 'token_expires_at' not in st.session_state:
+                st.session_state['token_expires_at'] = client.token_expires_at
 
-            return df
+        else:
+            client.access_token = access_token['access_token']
+            client.refresh_token = access_token['refresh_token']
+            client.token_expires_at = access_token['expires_at'] 
 
-    # filter df by chosen name
-    def filterdata(df, name):
-        return df[df["name"] == name]
+            if 'access_token' not in st.session_state:
+                st.session_state['access_token'] = client.access_token
+            if 'refresh_token' not in st.session_state:
+                st.session_state['refresh_token'] = client.refresh_token
+            if 'token_expires_at' not in st.session_state:
+                st.session_state['token_expires_at'] = client.token_expires_at
 
+    check_expiry(access_token)
 
-    # execute functions
-    df = load_data()
-    name_filter = st.selectbox("Select activity", df['name'])
-    df = filterdata(df, name_filter)
-    summary = create_summary(df)
+    @st.experimental_singleton
+    def athlete():
+        athlete = client.get_athlete()
+        return "Hello, {} {}".format(athlete.firstname, athlete.lastname)
 
-    # create key metric from chosen activity
-    metric1, metric2 = st.columns(2)
-
-    metric1.metric(
-        label="Distance (km)",
-        value = round(df['distance'].loc[df.index[0]]/1000,2),
-        delta = 100-round(df['distance'].loc[df.index[0]]/1000,2)
-    )
-
-    metric2.metric(
-        label="Elevation",
-        value = round(df["total_elevation_gain"].loc[df.index[0]]),
-        delta = 1000-round(df["total_elevation_gain"].loc[df.index[0]])
-    )
-
-    # metric3.metric(
-    #     label = "Speed (km/h)",
-    #     value = round(df["speed"],2),
-    #     delta = (round(df["speed"],2)/50*100)
-    # )
-
-    st.dataframe(summary)
+    greeting = athlete()
+    st.write(greeting)
 
 if __name__ == "__main__":
     main()
+
+
+
+
