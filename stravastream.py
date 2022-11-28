@@ -44,6 +44,10 @@ def main():
 
 def stravastream():
 
+    ## ============================= ##
+    ## Define functions to build app ##
+    ## ============================= ##
+
     @st.experimental_memo
     def get_access_token():
 
@@ -51,8 +55,6 @@ def stravastream():
         access_token = client.exchange_code_for_token(CLIENT_ID, CLIENT_SECRET, code)
 
         return access_token
-
-    access_token = get_access_token()
 
     @st.experimental_memo
     def check_expiry(access_token):
@@ -84,15 +86,62 @@ def stravastream():
             if 'token_expires_at' not in st.session_state:
                 st.session_state['token_expires_at'] = client.token_expires_at
 
-    check_expiry(access_token)
-
     @st.experimental_singleton
     def athlete():
         athlete = client.get_athlete()
         return "Hello, {} {}".format(athlete.firstname, athlete.lastname)
 
+    @st.experimental_singleton
+    def ftp():
+        ftp = athlete.ftp
+
+        try:
+
+            if int(ftp) < 300:
+                return f"{ftp}W FTP?! Slow."
+
+            else:
+                return f"{ftp}W FTP! Ok big man"
+        
+        except:
+            return "Too shy to post your ftp?"
+
+
+    @st.experimental_memo
+    def activities(limit):
+
+        activities = client.get_activities(limit=limit)
+
+        cols = ['name', 'start_date_local','type', 'distance', 'moving_time', 'elapsed_time',
+         'total_elevation_gain', 'average_speed','start_latitude', 'start_longitude']
+        
+        data = []
+
+        for activity in activities:
+            activity_dict = activity.to_dict()
+            data.append([activity.id]+[activity_dict.get(x) for x in cols])
+
+        cols.insert(0, 'id')
+
+        df = pd.DataFrame(data, columns=cols)
+        
+        return df
+
+    ## =================================== ##
+    ## =========== Run the App =========== ##
+    ## =================================== ##
+
+    access_token = get_access_token()
+    check_expiry(access_token)
+    ftp = ftp()
     greeting = athlete()
-    st.write(greeting)
+    st.header(greeting)
+    st.write(ftp)
+
+    limit = st.slider("Number of activities", min_value=0, max_value=100)
+
+    activities = activities(limit)
+    st.dataframe(activities)
 
 if __name__ == "__main__":
     main()
