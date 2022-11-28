@@ -60,6 +60,7 @@ def stravastream():
     def check_expiry(access_token):
 
         if time.time() > access_token['expires_at']:
+
             refresh_response = client.refresh_access_token(CLIENT_ID, CLIENT_SECRET, access_token['refresh_token'])
             access_token = refresh_response
 
@@ -67,24 +68,24 @@ def stravastream():
             client.refresh_token = refresh_response['refresh_token']
             client.token_expires_at = refresh_response['expires_at']
 
-            if 'access_token' not in st.session_state:
-                st.session_state['access_token'] = client.access_token
-            if 'refresh_token' not in st.session_state:
-                st.session_state['refresh_token'] = client.refresh_token
-            if 'token_expires_at' not in st.session_state:
-                st.session_state['token_expires_at'] = client.token_expires_at
+            # if 'access_token' not in st.session_state:
+            #     st.session_state['access_token'] = client.access_token
+            # if 'refresh_token' not in st.session_state:
+            #     st.session_state['refresh_token'] = client.refresh_token
+            # if 'token_expires_at' not in st.session_state:
+            #     st.session_state['token_expires_at'] = client.token_expires_at
 
         else:
             client.access_token = access_token['access_token']
             client.refresh_token = access_token['refresh_token']
             client.token_expires_at = access_token['expires_at'] 
 
-            if 'access_token' not in st.session_state:
-                st.session_state['access_token'] = client.access_token
-            if 'refresh_token' not in st.session_state:
-                st.session_state['refresh_token'] = client.refresh_token
-            if 'token_expires_at' not in st.session_state:
-                st.session_state['token_expires_at'] = client.token_expires_at
+            # if 'access_token' not in st.session_state:
+            #     st.session_state['access_token'] = client.access_token
+            # if 'refresh_token' not in st.session_state:
+            #     st.session_state['refresh_token'] = client.refresh_token
+            # if 'token_expires_at' not in st.session_state:
+            #     st.session_state['token_expires_at'] = client.token_expires_at
 
     @st.experimental_singleton
     def athlete():
