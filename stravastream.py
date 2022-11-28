@@ -133,6 +133,7 @@ def stravastream():
     ## =================================== ##
 
     access_token = get_access_token()
+    st.write(access_token)
     check_expiry(access_token)
     
     greeting = athlete()
