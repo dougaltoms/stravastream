@@ -48,7 +48,7 @@ def stravastream():
     ## Define functions to build app ##
     ## ============================= ##
 
-    @st.experimental_memo
+    @st.cache
     def get_access_token():
 
         code = st.experimental_get_query_params()["code"][0]
@@ -56,7 +56,7 @@ def stravastream():
 
         return access_token
 
-    @st.experimental_memo
+    @st.cache
     def check_expiry(access_token):
 
         if time.time() > access_token['expires_at']:
