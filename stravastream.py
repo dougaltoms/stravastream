@@ -143,9 +143,8 @@ def stravastream():
     st.header(greeting)
     st.write(ftp_)
 
-    limit = st.slider("Number of activities", min_value=0, max_value=100)
-
-    activities = activities(limit)
+    check_expiry()
+    activities = activities(100)
     st.dataframe(activities)
 
 if __name__ == "__main__":
