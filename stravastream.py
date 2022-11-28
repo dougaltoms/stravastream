@@ -143,7 +143,7 @@ def stravastream():
     st.header(greeting)
     st.write(ftp_)
 
-    check_expiry()
+    check_expiry(access_token)
     activities = activities(100)
     st.dataframe(activities)
 
