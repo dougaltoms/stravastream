@@ -202,5 +202,8 @@ if "code" in st.experimental_get_query_params():
             st.session_state["refresh_token"] = refresh_token
             st.session_state["access_token"] = access_token
 
+        activities = get_athlete_activities(access_token)
+        st.json(activities)
+
         st.text("Hello, {} {}".format(athlete_fname, athlete_lname))
         st.image(athlete_image_url)
