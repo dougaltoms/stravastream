@@ -161,6 +161,13 @@ import streamlit as st
 import pandas as pd
 from auth.auth import get_authorization_url, get_athlete_activities, get_refresh_token_and_access_token
 
+st.set_page_config("Your Strava Analysis",
+                    "🚴‍♂️",
+                    "wide")
+
+st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strava-logo-png-4.png?fit=1200%2C1198&ssl=1'
+        , width=200)
+
 url = get_authorization_url()
 link = f'[Click here to authorise]({url})'
 st.markdown(link)
@@ -186,7 +193,6 @@ if "code" in st.experimental_get_query_params():
                 
             tokens = get_refresh_token_and_access_token(code)
 
-            st.json(tokens)
 
             athlete_id = tokens["athlete"]["id"]
             athlete_fname = tokens["athlete"]["firstname"]
@@ -207,5 +213,5 @@ if "code" in st.experimental_get_query_params():
             activities = get_athlete_activities(access_token)
             st.json(activities)
 
-        st.text("Hello, {} {}".format(athlete_fname, athlete_lname))
+        st.header("Hello, {} {}!".format(athlete_fname, athlete_lname))
         st.image(athlete_image_url)
