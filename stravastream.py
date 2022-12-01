@@ -171,7 +171,7 @@ if "code" in st.experimental_get_query_params():
         df = st.session_state["df"]
 
     else:
-        auth_code = st.experimental_get_query_params["code"][0]
+        code = st.experimental_get_query_params()["code"][0]
         st.experimental_set_query_params()
 
         if "refresh_token" in st.session_state and "access_token" in st.session_state:
