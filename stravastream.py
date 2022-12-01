@@ -186,6 +186,8 @@ if "code" in st.experimental_get_query_params():
                 
             tokens = get_refresh_token_and_access_token(code)
 
+            st.json(tokens)
+
             athlete_id = tokens["athlete"]["id"]
             athlete_fname = tokens["athlete"]["firstname"]
             athlete_lname = tokens["athlete"]["lastname"]
