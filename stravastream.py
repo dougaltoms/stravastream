@@ -184,7 +184,7 @@ if "code" in st.experimental_get_query_params():
 
         else:
                 
-            tokens = get_refresh_token_and_access_token(auth_code)
+            tokens = get_refresh_token_and_access_token(code)
 
             athlete_id = tokens["athlete"]["id"]
             athlete_fname = tokens["athlete"]["firstname"]
