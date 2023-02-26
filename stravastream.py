@@ -173,9 +173,10 @@ link = f'[Click here to authorise]({url})'
 st.markdown(link)
 
 st.markdown(f'''
-<a href={url}><button style="background-color:#ee4f34;">Click here to authorise</button></a>
-''',
-unsafe_allow_html=True)
+  <form>
+      <input type="button" onclick="window.location.href='{url}';" value="Click here to authorise" />
+    </form>
+    ''')
 
 if "code" in st.experimental_get_query_params():
 
