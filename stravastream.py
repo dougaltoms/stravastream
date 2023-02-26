@@ -171,6 +171,7 @@ st.image('https://i2.wp.com/bikewalkwichita.org/wp-content/uploads/2020/03/strav
 url = get_authorization_url()
 link = f'[Click here to authorise]({url})'
 st.markdown(link)
+st.button(st.markdown(link))
 
 if "code" in st.experimental_get_query_params():
 
